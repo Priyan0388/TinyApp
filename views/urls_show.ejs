@@ -14,7 +14,10 @@
   <!-- Add EJS code here -->
   <%= shortURL %>
   <%= longURL %>
-
+<form method="POST" action="/urls/<%= shortURL %>/update">
+    <input type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
+    <button type="submit">UPDATE</button>
+  </form>
 </body>
 
 </html>
