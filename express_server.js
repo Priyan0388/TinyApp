@@ -6,8 +6,8 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 function generateRandomString() {
-    return Math.random().toString(36).substr(6) ;
-  }
+  return Math.random().toString(36).substr(6) ;
+}
 
 app.set('view engine', 'ejs');
 
@@ -51,7 +51,9 @@ app.get("/urls.json", (req, res) => {
 
   app.post("/urls", (req, res) => {
     console.log(req.body);  // Log the POST request body to the console
-    res.send("/u/:shortURL");         // Respond with 'Ok' (we will replace this)
+    const shortURL = generateRandomString();
+    res.send(shortURL)
+    // res.send("/u/:shortURL");         // Respond with 'Ok' (we will replace this)
   });
   
 app.listen(PORT, () => {
