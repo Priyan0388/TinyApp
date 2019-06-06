@@ -5,11 +5,34 @@ app.use(cookieParser())
 
 var PORT = 8080; // default port 8080
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 function generateRandomString() {
   return Math.random().toString(36).substr(6) ;
+}
+
+function checkEmail(email){
+  for (var userId in users){
+    var user = users[userId]
+    if (email === user.email){
+      return true;
+    }
+  }
+  return false;
 }
 
 app.set('view engine', 'ejs');
@@ -29,6 +52,14 @@ app.get("/urls.json", (req, res) => {
 
   app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
+  });
+
+  app.get("/urls/register", (req, res) => {
+    let templateVars = {
+    username: req.cookies["username"],
+    password: req.cookies["password"]
+    }
+    res.render("urls_register", templateVars);
   });
 
   app.get("/urls", (req, res) => {
@@ -85,6 +116,21 @@ app.get("/urls.json", (req, res) => {
   app.post("/logout", (req, res) => {
     res.clearCookie("username", req.body.username);
     res.redirect("/urls/");
+  })
+
+  app.post("/register", (req, res) => {
+    console.log(req.body)
+    if (req.body.email === "" || req.body.password === ""){
+      res.status(404).send('NO EMAIL');
+    }
+    else if (checkEmail(req.body.email)){
+      res.status(404).send("EMAIL ALREADY EXISTS");
+    } else {
+    const user_id = generateRandomString();
+    users[user_id] = {id: user_id, email: req.body.email, password: req.body.password};
+    res.cookie("user_id", user_id);
+    res.redirect("/urls/");
+    }
   })
 
 app.listen(PORT, () => {
