@@ -64,7 +64,7 @@ app.get("/urls.json", (req, res) => {
 
   app.get("/urls", (req, res) => {
     let templateVars = { 
-      username: req.cookies["username"],
+      userId: req.cookiesshortURL["userId"],
       urls: urlDatabase };
     res.render("urls_index", templateVars);
   });
@@ -78,7 +78,7 @@ app.get("/urls.json", (req, res) => {
   app.get("/urls/:shortURL", (req, res) => {
     let templateVars = { shortURL: req.params.shortURL, 
                         longURL: urlDatabase[req.params.shortURL],
-                        username: req.cookies["username"]
+                        username: req.cookies["userId"]
                         };
     res.render("urls_show", templateVars);
   });
@@ -121,7 +121,7 @@ app.get("/urls.json", (req, res) => {
   app.post("/register", (req, res) => {
     console.log(req.body)
     if (req.body.email === "" || req.body.password === ""){
-      res.status(404).send('NO EMAIL');
+      res.status(404).send('NO EMAIL OR PASSWORD REGISTERED');
     }
     else if (checkEmail(req.body.email)){
       res.status(404).send("EMAIL ALREADY EXISTS");
