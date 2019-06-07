@@ -38,8 +38,8 @@ function checkEmail(email){
 app.set('view engine', 'ejs');
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  // "b2xVn2": "http://www.lighthouselabs.ca",
+  // "9sm5xK": "http://www.google.com",
 };
 
 app.get("/", (req, res) => {
@@ -54,24 +54,39 @@ app.get("/urls.json", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
   });
 
-  app.get("/urls/register", (req, res) => {
+  app.get("/register", (req, res) => {
     let templateVars = {
-    username: req.cookies["username"],
-    password: req.cookies["password"]
+      username: req.cookies["username"],
+      password: req.cookies["password"]
     }
     res.render("urls_register", templateVars);
   });
 
-  app.get("/urls", (req, res) => {
-    let templateVars = { 
+  app.get("/login", (req, res) => {
+    let templateVars = {
       username: req.cookies["username"],
-      urls: urlDatabase };
+      password: req.cookies["password"]
+    }
+    res.render("urls_login", templateVars);
+  });
+
+  app.get("/urls", (req, res) => {
+    let user_id = req.cookies["user_id"];
+    let user = users[user_id];
+    let templateVars = { 
+      email: user.email,
+      urls: urlDatabase 
+    };
     res.render("urls_index", templateVars);
   });
 
   app.get("/urls/new", (req, res) => {
+    let user_id = req.cookies["user_id"];
+    let user = users[user_id];
     let templateVars = {
-    username: req.cookies["username"]}
+      username: req.cookies["user_id"],
+      email: user.email
+    }
     res.render("urls_new", templateVars);
   });
 
@@ -114,7 +129,7 @@ app.get("/urls.json", (req, res) => {
   })
 
   app.post("/logout", (req, res) => {
-    res.clearCookie("username", req.body.username);
+    res.clearCookie("users", req.body.username);
     res.redirect("/urls/");
   })
 
